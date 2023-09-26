@@ -5,7 +5,6 @@
 
 """
 EGI Online Storage Free Space Monitor probe, built using NAP and python3 only
-
 """
 
 import sys
@@ -14,9 +13,7 @@ import nap.core
 import pycurl
 from io import BytesIO
 
-
 PROBE_VERSION = "v0.0.1"
-
 
 # ########################################################################### #
 app = nap.core.Plugin(description="NAGIOS Storage Quota Monitor probe", version=PROBE_VERSION)
@@ -26,7 +23,6 @@ app.add_argument("-V", "--VO", help="The VO to test", default="biomed")
 app.add_argument("-m", "--min_free_space", help="The min free space in GB ", default="100")
 app.add_argument("-O", "--ops_portal_url", help="OPS Portal url", 
             default="https://operations-portal.egi.eu/api/storage_list/json")
-
 
 def get_storages(args, io):
     buffer = BytesIO()
@@ -38,7 +34,6 @@ def get_storages(args, io):
     c.setopt(c.HTTPHEADER, ['accept: application/json',
                                           apikey_header])
     c.perform()
-    
     c.close()
     return buffer.getvalue()
 
@@ -52,8 +47,6 @@ def parse_args(args, io):
         exit(1)
     else:
         return json.loads(get_storages(args,io))
-
-
     
 @app.metric(seq=1, metric_name="CheckQuota", passive=False)
 def metricCheckQuota(args, io):
