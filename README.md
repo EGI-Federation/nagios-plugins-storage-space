@@ -60,9 +60,11 @@ optional arguments:
 Sep 26 21:42:04 DEBUG core[379]: Call sequence: [(<function metricCheckFreeSpace at 0x7f85136c69d8>, 'CheckFreeSpace', False)]
 Sep 26 21:42:04 DEBUG core[379]:    Function call: metricCheckFreeSpace
 OK - Free space is above the threshold: 3848 GB
+```
 
+## Build
 mkdir build
 cd build
 make rpm -f ../Makefile 
-```
+
 
