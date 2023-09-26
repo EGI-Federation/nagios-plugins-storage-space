@@ -4,7 +4,7 @@
 ##############################################################################
 
 """
-EGI Online Storage Free Space Monitor probe, built using NAP and python3 only
+EGI Online Storage Free Space probe, built using NAP and python3 only
 """
 
 import sys
@@ -16,7 +16,7 @@ from io import BytesIO
 PROBE_VERSION = "v0.0.1"
 
 # ########################################################################### #
-app = nap.core.Plugin(description="NAGIOS Storage Quota Monitor probe", version=PROBE_VERSION)
+app = nap.core.Plugin(description="NAGIOS Storage Free Space probe", version=PROBE_VERSION)
 app.add_argument("-F", "--file", help="input json file with storage info")
 app.add_argument("-T", "--token", help="token needed to access Operations portal API")
 app.add_argument("-V", "--VO", help="The VO to test", default="biomed")
@@ -48,10 +48,10 @@ def parse_args(args, io):
     else:
         return json.loads(get_storages(args,io))
     
-@app.metric(seq=1, metric_name="CheckQuota", passive=False)
-def metricCheckQuota(args, io):
+@app.metric(seq=1, metric_name="CheckFreeSpace", passive=False)
+def metricCheckFreeSpace(args, io):
     """
-    Check storage quota
+    Check storage free space
     """
     try:
         storages = parse_args(args, io)
