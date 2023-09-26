@@ -74,8 +74,8 @@ def metricCheckQuota(args, io):
                                 id = info['id']
                                 _totalsize = info['TotalSize']
                                 _freesize = info['FreeSize']
-                            totalsize = totalsize + int(_totalsize)
-                            freesize = freesize + int(_freesize)
+                                totalsize = totalsize + int(_totalsize)
+                                freesize = freesize + int(_freesize)
         threshold_with_percent = int(args.min_free_space)
         threshold_with_percent += (threshold_with_percent * 5/100)
         if freesize < int(args.min_free_space):
