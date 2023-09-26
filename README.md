@@ -5,19 +5,17 @@ This is Nagios probe to monitor Storage endpoints free space.
 It's based on the information retrieved by the Operations portal which is aggregating the information published by the storages via the BDII.
 A valid token to access the Opeerations portal API  is needed to execute the probe
 
-The probes runs the active check  
-
-the active check VOAll just combines the passive checks outcomes.
-
 ## Usage
 
 ```shell
-usage: storage_probe.py [-h] [--version] [-H HOSTNAME] [-w WARNING] [-c CRITICAL]
-                    [-d] [-p PREFIX] [-s SUFFIX] [-t TIMEOUT] [-C COMMAND]
-                    [--dry-run] [-o OUTPUT] [-E ENDPOINT] [-X X509]
-                    [--se-timeout SE_TIMEOUT]
+usage: storage_monitor_probe.py [-h] [--version] [-H HOSTNAME] [-w WARNING]
+                                [-c CRITICAL] [-d] [--print-all] [-p PREFIX]
+                                [-s SUFFIX] [-t TIMEOUT] [-C COMMAND]
+                                [--dry-run] [-o OUTPUT] [-F FILE] [-T TOKEN]
+                                [-V VO] [-m MIN_FREE_SPACE]
+                                [-O OPS_PORTAL_URL]
 
-NAGIOS Storage probe
+NAGIOS Storage Free Space probe
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -30,6 +28,7 @@ optional arguments:
   -c CRITICAL, --critical CRITICAL
                         Offset to result in critical status
   -d, --debug           Specify debugging mode
+  --print-all           Print output from all metrics to stdout
   -p PREFIX, --prefix PREFIX
                         Text to prepend to ever metric name
   -s SUFFIX, --suffix SUFFIX
@@ -44,36 +43,23 @@ optional arguments:
                         Plugin output format; valid options are nagios,
                         check_mk or passive (via command pipe); defaults to
                         nagios)
-  -E ENDPOINT, --endpoint ENDPOINT
-                        Storage URL to test (Mandatory)
-  -X X509, --x509 X509  location of x509 certificate proxy file
-  --se-timeout SE_TIMEOUT
-                        storage operations timeout
-  -S, --skip-ls-dir     skip LSDir tests, needed for Object storage backend
+  -F FILE, --file FILE  input json file with storage info
+  -T TOKEN, --token TOKEN
+                        token needed to access Operations portal API
+  -V VO, --VO VO        The VO to test
+  -m MIN_FREE_SPACE, --min_free_space MIN_FREE_SPACE
+                        The min free space in GB
+  -O OPS_PORTAL_URL, --ops_portal_url OPS_PORTAL_URL
+                        OPS Portal url
 
 ```
 ## Example
 
 ```shell
-./plugins/storage_probe.py -E root://eospps.cern.ch:1094/eos/pps/opstest/ftstests/test_andrea -H eospps.cern.ch  --dry-run -X /tmp/x509up_u0  -d
-Dec 01 18:40:53 DEBUG core[1559]: Call sequence: [(<function metricLsDir at 0x7f761240bc80>, 'LsDir', True), (<function metricPut at 0x7f761240bd08>, 'Put', True), (<function metricLs at 0x7f761240bd90>, 'Ls', True), (<function metricGet at 0x7f761240be18>, 'Get', True), (<function metricDel at 0x7f761240bea0>, 'Del', True), (<function metricAlll at 0x7f761240bf28>, 'All', False)]
-Dec 01 18:40:53 DEBUG core[1559]:    Function call: metricLsDir
-Dec 01 18:40:53 DEBUG core[1559]: b'OK - Storage Path[root://eospps.cern.ch:1094/eos/pps/opstest/ftstests/test_andrea] Directory successfully listed\\n'
-Dec 01 18:40:53 DEBUG core[1559]: [1638384053] PROCESS_SERVICE_CHECK_RESULT;eospps.cern.ch;LsDir;0;OK - Storage Path[root://eospps.cern.ch:1094/eos/pps/opstest/ftstests/test_andrea] Directory successfully listed\n
-Dec 01 18:40:53 DEBUG core[1559]:    Function call: metricPut
-Dec 01 18:40:54 DEBUG core[1559]: b'OK - File was copied to the Storage endpoint: Transfer time: 0:00:00.815718\\n'
-Dec 01 18:40:54 DEBUG core[1559]: [1638384054] PROCESS_SERVICE_CHECK_RESULT;eospps.cern.ch;Put;0;OK - File was copied to the Storage endpoint: Transfer time: 0:00:00.815718\n
-Dec 01 18:40:54 DEBUG core[1559]:    Function call: metricLs
-Dec 01 18:40:54 DEBUG core[1559]: b'OK - File successfully listed\\n'
-Dec 01 18:40:54 DEBUG core[1559]: [1638384054] PROCESS_SERVICE_CHECK_RESULT;eospps.cern.ch;Ls;0;OK - File successfully listed\n
-Dec 01 18:40:54 DEBUG core[1559]:    Function call: metricGet
-Dec 01 18:40:54 DEBUG core[1559]: b'OK - File was copied from Storage endpoint.: Diff successful. Transfer time: 0:00:00.127798\\n'
-Dec 01 18:40:54 DEBUG core[1559]: [1638384054] PROCESS_SERVICE_CHECK_RESULT;eospps.cern.ch;Get;0;OK - File was copied from the Storage endpoint.: Diff successful. Transfer time: 0:00:00.127798\n
-Dec 01 18:40:54 DEBUG core[1559]:    Function call: metricDel
-Dec 01 18:40:54 DEBUG core[1559]: b'OK - File was deleted from the Storage endpoint.\\n'
-Dec 01 18:40:54 DEBUG core[1559]: [1638384054] PROCESS_SERVICE_CHECK_RESULT;eospps.cern.ch;Del;0;OK - File was deleted from the Storage endpoint.\n
-Dec 01 18:40:54 DEBUG core[1559]:    Function call: metricAlll
-OK - All fine
+/plugins/storage_monitor_probe.py --token=xxxxxxxxx --dry-run -H srm.ciemat.es -m 400  -d
+Sep 26 21:42:04 DEBUG core[379]: Call sequence: [(<function metricCheckFreeSpace at 0x7f85136c69d8>, 'CheckFreeSpace', False)]
+Sep 26 21:42:04 DEBUG core[379]:    Function call: metricCheckFreeSpace
+OK - Free space is above the threshold: 3848 GB
 
 mkdir build
 cd build
