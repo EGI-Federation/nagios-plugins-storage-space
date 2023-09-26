@@ -76,10 +76,12 @@ def metricCheckQuota(args, io):
                                 _freesize = info['FreeSize']
                             totalsize = totalsize + int(_totalsize)
                             freesize = freesize + int(_freesize)
+        threshold_with_percent = int(args.min_free_space)
+        threshold_with_percent += (threshold_with_percent * 5/100)
         if freesize < int(args.min_free_space):
             io.summary = "Free space is less than the threshold configured: %s GB" % str(freesize) 
             io.status = nap.CRITICAL
-        elif freesize < int(args.min_free_space) + 100:
+        elif freesize < threshold_with_percent:
             io.summary = "Free space is close to the minimum threshold configured: %s GB " % str(freesize)
             io.staus = nap.WARNING
         else:
