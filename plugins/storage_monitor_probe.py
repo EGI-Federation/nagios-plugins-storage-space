@@ -44,7 +44,7 @@ def parse_args(args, io):
     elif not args.token:
         io.summary = "Missing token argument" 
         io.status = nap.CRITICAL
-        exit(1)
+        return None
     else:
         return json.loads(get_storages(args,io))
     
@@ -55,20 +55,22 @@ def metricCheckFreeSpace(args, io):
     """
     try:
         storages = parse_args(args, io)
-
-        totalsize = 0
         freesize = 0
+        found = False
+        if not storages:
+            return  
         for storage in storages['storages']:
             if args.hostname in storage['key']:
                 for share in storage['storage']:
                     if share['shares']:
                         for info in share['shares']:
                             if 'id' in info:
-                                id = info['id']
-                                _totalsize = info['TotalSize']
-                                _freesize = info['FreeSize']
-                                totalsize = totalsize + int(_totalsize)
-                                freesize = freesize + int(_freesize)
+                                found = True
+                                freesize += int(info['FreeSize'])
+        if not found:
+            io.summary = "The information about the storage %s are not avaiable " % args.hostname  
+            io.status = nap.CRITICAL
+            return 
         threshold_with_percent = int(args.min_free_space)
         threshold_with_percent += (threshold_with_percent * 5/100)
         if freesize < int(args.min_free_space):
