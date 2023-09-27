@@ -1,4 +1,4 @@
-# Nagios-plugins-storage-storage
+# Nagios-plugins-storage-space
 
 This is Nagios probe to monitor Storage endpoints free space.
 
