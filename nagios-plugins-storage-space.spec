@@ -7,7 +7,7 @@
 Name:       nagios-plugins-storage-space
 Version:    0.0.1
 Release:    1%{?dist}
-Summary:    Nagios probes to be run remotely against EGI Online endpoints
+Summary:    Nagios probes to check free space om EGI Online endpoints
 License:    MIT
 Group:      Applications/Internet
 URL:        https://github.com/EGI-Federation/nagios-plugins-storage-space
@@ -50,5 +50,5 @@ rm -rf %{buildroot}
 %doc LICENSE README.md
 
 %changelog
-* Wed 27 September  2023 Andrea Manzi <andrea.manzi@egi.eu> - 0.0.1-0
+* Wed Sep 27 2023 Andrea Manzi <andrea.manzi@egi.eu> - 0.0.1-0
 - first version
